@@ -218,7 +218,16 @@
                 padding: 18px;
             }
         }
-    </style>
+    
+        .date-link.unavailable-date {
+            color: #a99a8b;
+            background: #f8f1e8;
+            border-color: #eadfd3;
+            cursor: default;
+            pointer-events: none;
+        }
+
+</style>
 </head>
 <body>
     <main class="page">
@@ -242,9 +251,12 @@
             </div>
         </section>
 
-        <nav class="date-nav" aria-label="Available Panchanga dates">
-            <a class="date-link " href="2026-06-16.html">Tuesday, June 16, 2026</a><a class="date-link active-date" href="2026-06-17.html">Wednesday, June 17, 2026</a><a class="date-link " href="2026-06-18.html">Thursday, June 18, 2026</a><a class="date-link " href="2026-06-19.html">Friday, June 19, 2026</a><a class="date-link " href="2026-06-20.html">Saturday, June 20, 2026</a><a class="date-link " href="2026-06-21.html">Sunday, June 21, 2026</a><a class="date-link " href="2026-06-22.html">Monday, June 22, 2026</a>
-        </nav>
+        <nav
+            id="date-navigation"
+            class="date-nav"
+            aria-label="Nearby Panchanga dates"
+            data-current-date="2026-06-17"
+        ></nav>
 
         
             <details class="timezone-card" open>
@@ -1513,5 +1525,99 @@
             Source details are linked city-wise to Drik Panchang.
         </p>
     </main>
+
+    <script id="dynamic-date-navigation">
+        (function () {
+            const nav = document.getElementById("date-navigation");
+
+            if (!nav) {
+                return;
+            }
+
+            const currentDateText = nav.dataset.currentDate;
+
+            function parseLocalDate(dateText) {
+                const parts = dateText.split("-").map(Number);
+                return new Date(parts[0], parts[1] - 1, parts[2], 12, 0, 0);
+            }
+
+            function toFileDate(dateObject) {
+                const year = dateObject.getFullYear();
+                const month = String(dateObject.getMonth() + 1).padStart(2, "0");
+                const day = String(dateObject.getDate()).padStart(2, "0");
+                return `${year}-${month}-${day}`;
+            }
+
+            function displayDate(dateObject) {
+                return dateObject.toLocaleDateString(
+                    "en-US",
+                    {
+                        weekday: "long",
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric"
+                    }
+                );
+            }
+
+            async function pageExists(fileName) {
+                try {
+                    const response = await fetch(
+                        fileName + "?check=" + Date.now(),
+                        {
+                            method: "HEAD",
+                            cache: "no-store"
+                        }
+                    );
+
+                    return response.ok;
+                } catch (error) {
+                    return false;
+                }
+            }
+
+            async function buildDateNavigation() {
+                const currentDate = parseLocalDate(currentDateText);
+
+                for (let offset = -2; offset <= 2; offset += 1) {
+                    const targetDate = new Date(currentDate);
+                    targetDate.setDate(currentDate.getDate() + offset);
+
+                    const targetDateText = toFileDate(targetDate);
+                    const fileName = `${targetDateText}.html`;
+                    const label = displayDate(targetDate);
+
+                    if (offset === 0) {
+                        const currentLink = document.createElement("a");
+                        currentLink.className = "date-link active-date";
+                        currentLink.href = fileName;
+                        currentLink.textContent = label;
+                        nav.appendChild(currentLink);
+                        continue;
+                    }
+
+                    const exists = await pageExists(fileName);
+
+                    if (exists) {
+                        const link = document.createElement("a");
+                        link.className = "date-link";
+                        link.href = fileName;
+                        link.textContent = label;
+                        nav.appendChild(link);
+                    } else {
+                        const placeholder = document.createElement("span");
+                        placeholder.className =
+                            "date-link unavailable-date";
+                        placeholder.textContent =
+                            `${label} — Not available`;
+                        nav.appendChild(placeholder);
+                    }
+                }
+            }
+
+            buildDateNavigation();
+        })();
+    </script>
+
 </body>
 </html>

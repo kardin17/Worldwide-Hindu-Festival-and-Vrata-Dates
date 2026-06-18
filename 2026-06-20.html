@@ -725,6 +725,26 @@
 
                 output = output.replace(/ರವರೆಗೆ/g, "ರ ವರೆಗೆ");
 
+                // Reorder Kannada timing phrases into the natural format:
+                // ಬೆಳಿಗ್ಗೆ/ಸಂಜೆ <time>, <date if any> ರ ವರೆಗೆ
+                //
+                // Examples:
+                // ಪಂಚಮಿ ರ ವರೆಗೆ ಬೆಳಿಗ್ಗೆ 06:16
+                // -> ಪಂಚಮಿ ಬೆಳಿಗ್ಗೆ 06:16 ರ ವರೆಗೆ
+                //
+                // ಪೂರ್ವ ಫಲ್ಗುಣಿ ರ ವರೆಗೆ ಬೆಳಿಗ್ಗೆ 12:01, ಜೂನ್ 21
+                // -> ಪೂರ್ವ ಫಲ್ಗುಣಿ ಬೆಳಿಗ್ಗೆ 12:01, ಜೂನ್ 21 ರ ವರೆಗೆ
+                output = output.replace(
+                    /ರ ವರೆಗೆ\s+(ಬೆಳಿಗ್ಗೆ|ಸಂಜೆ)\s+(\d{1,2}:\d{2})(\s*,\s*[^;|]+)?/g,
+                    function (_, dayPart, time, optionalDate) {
+                        const datePart = optionalDate
+                            ? optionalDate.replace(/\s*,\s*/, ", ")
+                            : "";
+
+                        return `${dayPart} ${time}${datePart} ರ ವರೆಗೆ`;
+                    }
+                );
+
                 return output;
             }
 

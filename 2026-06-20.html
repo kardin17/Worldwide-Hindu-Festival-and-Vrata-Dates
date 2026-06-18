@@ -602,6 +602,8 @@
                 "Pushya": "ಪುಷ್ಯ",
                 "Ashlesha": "ಆಶ್ಲೇಷ",
                 "Magha": "ಮಘಾ",
+                "Purva Phalguni": "ಪೂರ್ವ ಫಲ್ಗುಣಿ",
+                "Uttara Phalguni": "ಉತ್ತರ ಫಲ್ಗುಣಿ",
                 "Hasta": "ಹಸ್ತ",
                 "Chitra": "ಚಿತ್ರಾ",
                 "Swati": "ಸ್ವಾತಿ",
@@ -609,9 +611,13 @@
                 "Anuradha": "ಅನುರಾಧಾ",
                 "Jyeshtha": "ಜ್ಯೇಷ್ಠಾ",
                 "Mula": "ಮೂಲ",
+                "Purva Ashadha": "ಪೂರ್ವಾಷಾಢ",
+                "Uttara Ashadha": "ಉತ್ತರಾಷಾಢ",
                 "Shravana": "ಶ್ರವಣ",
                 "Dhanishtha": "ಧನಿಷ್ಠಾ",
                 "Shatabhisha": "ಶತಭಿಷ",
+                "Purva Bhadrapada": "ಪೂರ್ವಭಾದ್ರಪದ",
+                "Uttara Bhadrapada": "ಉತ್ತರಭಾದ್ರಪದ",
                 "Revati": "ರೇವತಿ",
                 "Sukarma": "ಸುಕರ್ಮ",
                 "Dhriti": "ಧೃತಿ",
@@ -643,8 +649,20 @@
                 "Sankranti Moment": "ಸಂಕ್ರಾಂತಿ ಕ್ಷಣ",
                 "Punya Kala": "ಪುಣ್ಯಕಾಲ",
                 "Maha Punya Kala": "ಮಹಾಪುಣ್ಯಕಾಲ",
-                "upto": "ರವರೆಗೆ",
+                "upto": "ರ ವರೆಗೆ",
                 "Full Night": "ಪೂರ್ಣ ರಾತ್ರಿ",
+                "Jan": "ಜನವರಿ",
+                "Feb": "ಫೆಬ್ರವರಿ",
+                "Mar": "ಮಾರ್ಚ್",
+                "Apr": "ಏಪ್ರಿಲ್",
+                "May": "ಮೇ",
+                "Jun": "ಜೂನ್",
+                "Jul": "ಜುಲೈ",
+                "Aug": "ಆಗಸ್ಟ್",
+                "Sep": "ಸೆಪ್ಟೆಂಬರ್",
+                "Oct": "ಅಕ್ಟೋಬರ್",
+                "Nov": "ನವೆಂಬರ್",
+                "Dec": "ಡಿಸೆಂಬರ್",
                 "India": "ಭಾರತ",
                 "United States": "ಅಮೆರಿಕ ಸಂಯುಕ್ತ ಸಂಸ್ಥಾನ",
                 "Karnataka": "ಕರ್ನಾಟಕ",
@@ -663,6 +681,7 @@
                 "Pune": "ಪುಣೆ",
                 "Surat": "ಸೂರತ್",
                 "Pittsford": "ಪಿಟ್ಸ್‌ಫರ್ಡ್",
+                "Greece": "ಗ್ರೀಸ್",
                 "Rochester": "ರೋಚೆಸ್ಟರ್",
                 "Chicago": "ಶಿಕಾಗೊ",
                 "Dallas": "ಡಲ್ಲಾಸ್",
@@ -694,6 +713,17 @@
                 for (const [english, kannada] of entries) {
                     output = output.split(english).join(kannada);
                 }
+
+                output = output.replace(
+                    /(\d{1,2}:\d{2})\s*AM\b/g,
+                    "ಬೆಳಿಗ್ಗೆ $1"
+                );
+                output = output.replace(
+                    /(\d{1,2}:\d{2})\s*PM\b/g,
+                    "ಸಂಜೆ $1"
+                );
+
+                output = output.replace(/ರವರೆಗೆ/g, "ರ ವರೆಗೆ");
 
                 return output;
             }
